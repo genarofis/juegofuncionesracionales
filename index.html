@@ -57,18 +57,9 @@
   <div class="column" id="graficas">
     <h2>Gráficas</h2>
     <div class="dropzone" data-func="1"><img src="dibujo1x.png" width="200"></div>
-    <div class="dropzone" data-func="2"><img src="diujounocerounhoyo2polos.png" width="200"></div>
+    <div class="dropzone" data-func="2"><img src="dibujounocerounhoyo2polos.png" width="200"></div>
     <div class="dropzone" data-func="3"><img src="dibujo3entrexcuadmas1.png" width="200"></div>
   </div>
-
-<script>
-  // --- Mezclar las gráficas ---
-  const contenedorGraficas = document.getElementById("graficas");
-  const zonas = Array.from(contenedorGraficas.querySelectorAll(".dropzone"));
-  
-  mezclar(zonas);
-  zonas.forEach(z => contenedorGraficas.appendChild(z));
-</script>
 
  
   <div class="column" id="formas">
@@ -101,7 +92,14 @@
   tarjetas.forEach(card => contenedor.appendChild(card));
 </script>
 
-
+<script>
+  // --- Mezclar las gráficas ---
+  const contenedorGraficas = document.getElementById("graficas");
+  const zonas = Array.from(contenedorGraficas.querySelectorAll(".dropzone"));
+  
+  mezclar(zonas);
+  zonas.forEach(z => contenedorGraficas.appendChild(z));
+</script>
 
 
 
@@ -137,6 +135,7 @@ dropzones.forEach(zone => {
 
 </body>
 </html>
+
 
 
 
