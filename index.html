@@ -61,6 +61,16 @@
     <div class="dropzone" data-func="3"><img src="dibujo3entrexcuadmas1.png" width="200"></div>
   </div>
 
+<script>
+  // --- Mezclar las gráficas ---
+  const contenedorGraficas = document.getElementById("graficas");
+  const zonas = Array.from(contenedorGraficas.querySelectorAll(".dropzone"));
+  
+  mezclar(zonas);
+  zonas.forEach(z => contenedorGraficas.appendChild(z));
+</script>
+
+ 
   <div class="column" id="formas">
     <h2>Formas algebraicas</h2>
     <div class="card" draggable="true" data-func="1">\( (x-1)(x+2) \)</div>
@@ -91,25 +101,7 @@
   tarjetas.forEach(card => contenedor.appendChild(card));
 </script>
 
-<script>
-  // --- Mezclar aleatoriamente las graficas ---
-  const contenedor = document.getElementById("graficas");
-  const graficas = Array.from(graficas.querySelectorAll(".dropzone"));
-  mezclar(zonas);
- zonas.forEach(z=> graficas.appendChild(z));
-  // Función para mezclar un array (algoritmo de Fisher–Yates)
-  function mezclar(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-  }
 
-  mezclar(graficas);
-
-  // Borrar las tarjetas del DOM y volver a insertarlas en orden aleatorio
-  graficas.forEach(card => contenedor.appendChild(card));
-</script>
 
 
 
@@ -145,6 +137,7 @@ dropzones.forEach(zone => {
 
 </body>
 </html>
+
 
 
 
