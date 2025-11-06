@@ -1,235 +1,230 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Juego de Funciones Racionales</title>
-<style>
-  body {
-    font-family: 'Segoe UI', sans-serif;
-    text-align: center;
-    background: #f9f9f9;
-    color: #333;
-    margin: 0;
-    padding: 0;
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Juego de Funciones Racionales</title>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
-  h1 {
-    background: #0078D4;
-    color: white;
-    margin: 0;
-    padding: 1rem;
-  }
-
-  .container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-top: 1rem;
-  }
-
-  .column {
-    flex: 1 1 300px;
-    margin: 10px;
-    background: white;
-    border-radius: 10px;
-    padding: 10px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  }
-
-  .dropzone, .card {
-    border: 2px dashed #ccc;
-    border-radius: 10px;
-    margin: 10px;
-    padding: 10px;
-    background: #fdfdfd;
-    transition: transform 0.2s;
-  }
-
-  .dropzone:hover, .card:hover {
-    transform: scale(1.03);
-    border-color: #0078D4;
-  }
-
-  .dropzone img {
-    width: 100%;
-    max-width: 220px;
-    height: auto;
-    border-radius: 10px;
-  }
-
-  .correct { background: #d4edda; border-color: #28a745; }
-  .incorrect { background: #f8d7da; border-color: #dc3545; }
-
-  #scoreboard {
-    margin-top: 1rem;
-    font-size: 1.2rem;
-    font-weight: bold;
-  }
-
-  .envio-resultados {
-    margin-top: 20px;
-  }
-
-  input {
-    padding: 8px;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-  }
-
-  button {
-    background: #0078D4;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    padding: 10px 15px;
-    cursor: pointer;
-    font-size: 1rem;
-  }
-
-  button:hover {
-    background: #005A9E;
-  }
-
-  @media (max-width: 600px) {
-    .container {
+  <style>
+    /* ==== ESTILOS GENERALES ==== */
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, #f0f4ff, #dbe9ff);
+      margin: 0;
+      padding: 20px;
+      display: flex;
       flex-direction: column;
       align-items: center;
+      min-height: 100vh;
     }
-  }
-</style>
-</head>
-<body>
-  <h1>🎯 Empareja la gráfica con su forma algebraica</h1>
+    h1 {
+      color: #004aad;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    h2 { text-align: center; color: #004aad; }
 
-  <button onclick="iniciarJuego()">🔄 Comenzar juego</button>
-  <div id="scoreboard">Aciertos: 0</div>
+    /* ==== CONTENEDORES ==== */
+    .container {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      width: 100%;
+      max-width: 1200px;
+    }
+    .column {
+      flex: 1 1 350px;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      padding: 20px;
+      overflow-y: auto;
+      max-height: 70vh;
+      scroll-behavior: smooth;
+      transition: all 0.3s ease;
+    }
+
+    /* Scroll personalizado */
+    .column::-webkit-scrollbar {
+      width: 8px;
+    }
+    .column::-webkit-scrollbar-track {
+      background: #f0f4ff;
+      border-radius: 10px;
+    }
+    .column::-webkit-scrollbar-thumb {
+      background: #0078d7;
+      border-radius: 10px;
+    }
+    .column::-webkit-scrollbar-thumb:hover {
+      background: #005fa3;
+    }
+
+    /* ==== ELEMENTOS DEL JUEGO ==== */
+    .dropzone {
+      border: 2px dashed #0078d7;
+      border-radius: 10px;
+      padding: 10px;
+      margin: 10px;
+      text-align: center;
+      transition: background 0.3s;
+    }
+    .dropzone:hover { background: #e6f0ff; }
+    img {
+      width: 100%;
+      max-width: 240px;
+      height: auto;
+      display: block;
+      margin: auto;
+    }
+    .card {
+      background: #f8f9ff;
+      margin: 10px;
+      padding: 10px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      cursor: grab;
+      text-align: center;
+      transition: transform 0.2s;
+    }
+    .card:hover { transform: scale(1.03); }
+    .card.dragging { opacity: 0.5; }
+
+    /* ==== BOTONES Y MARCADOR ==== */
+    .scoreboard {
+      margin: 15px;
+      font-size: 18px;
+      background: #004aad;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 10px;
+    }
+    button {
+      background: #0078d7;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      margin: 5px;
+      transition: background 0.2s ease;
+    }
+    button:hover { background: #005fa3; }
+
+    /* ==== MODO CELULAR ==== */
+    @media (max-width: 768px) {
+      .container { flex-direction: column; align-items: center; }
+      .column {
+        width: 90%;
+        max-height: none;
+        overflow-y: visible;
+      }
+      img { max-width: 100%; }
+    }
+  </style>
+</head>
+
+<body>
+  <h1>🎯 Empareja la gráfica con su ecuación</h1>
+  <div class="scoreboard">Aciertos: <span id="score">0</span></div>
+  <div>
+    <button id="startButton">🔄 Comenzar Juego</button>
+    <button id="sendButton">📤 Enviar resultados</button>
+  </div>
 
   <div class="container">
     <div class="column" id="graficas">
       <h2>Gráficas</h2>
+      <div class="dropzone" data-func="1"><img src="dibujo1x.png"></div>
+      <div class="dropzone" data-func="2"><img src="dbujouncerounhoyo2polos.png"></div>
+      <div class="dropzone" data-func="3"><img src="dibujo3entrexcuadmas1.png"></div>
+      <div class="dropzone" data-func="4"><img src="dibujoparabolaentreparabola.png"></div>
+      <div class="dropzone" data-func="5"><img src="dibujounhoyouncerounpolo.png"></div>
+      <div class="dropzone" data-func="6"><img src="dibujoxcuadentrexmas1.png"></div>
+      <div class="dropzone" data-func="7"><img src="dibujoxentreparabola.png"></div>
+      <div class="dropzone" data-func="8"><img src="dibujoxentrex2.png"></div>
     </div>
 
     <div class="column" id="formas">
       <h2>Formas algebraicas</h2>
+      <div class="card" draggable="true" data-func="1">\( \frac{-1}{x} \)</div>
+      <div class="card" draggable="true" data-func="2">\( \frac{x(x-2)}{(x+1)x(x-3)} \)</div>
+      <div class="card" draggable="true" data-func="2">\( \frac{x^2-2x}{x^3-2x^2-3x} \)</div>
+      <div class="card" draggable="true" data-func="3">\( \frac{3}{x^2+1}\)</div>
+      <div class="card" draggable="true" data-func="4">\( \frac{x^2-1}{x^2-4} \)</div>
+      <div class="card" draggable="true" data-func="4">\( \frac{(x-1)(x+1)}{(x-2)(x+2)} \)</div>
+      <div class="card" draggable="true" data-func="5">\( \frac{(x+1)(x-2)}{2(x+3)(x+1)} \)</div>
+      <div class="card" draggable="true" data-func="5">\( \frac{x^2-x-2}{2x^2+4x+6x} \)</div>
+      <div class="card" draggable="true" data-func="6">\( \frac{x^2}{2(x+1)} \)</div>
+      <div class="card" draggable="true" data-func="6">\( \frac{x^2}{2x+2} \)</div>
+      <div class="card" draggable="true" data-func="7">\( \frac{x-2}{(x+1)(x-3)} \)</div>
+      <div class="card" draggable="true" data-func="7">\( \frac{x-2}{x^2-2x-3} \)</div>
+      <div class="card" draggable="true" data-func="8">\( \frac{x}{(x-2)^2} \)</div>
+      <div class="card" draggable="true" data-func="8">\( \frac{x}{x^2-4x+4} \)</div>
     </div>
   </div>
 
-  <div class="envio-resultados">
-    <h3>Enviar resultados</h3>
-    <input type="text" id="nombreAlumno" placeholder="Escribe tu nombre completo">
-    <button onclick="actualizarLinkForm()">Generar enlace</button>
-    <p id="mensajeEnvio"></p>
-    <a id="linkForm" target="_blank" style="display:none; font-weight:bold; color:#0078D4;">
-      📤 Abrir formulario para enviar resultados
-    </a>
-  </div>
+  <script>
+    // ==== FUNCIÓN PARA MEZCLAR ELEMENTOS ====
+    function mezclar(nodoPadre) {
+      for (let i = nodoPadre.children.length; i >= 0; i--) {
+        nodoPadre.appendChild(nodoPadre.children[Math.random() * i | 0]);
+      }
+    }
 
-<script>
-let score = 0;
+    // ==== BOTÓN PARA REINICIAR Y MEZCLAR ====
+    document.getElementById("startButton").addEventListener("click", () => {
+      const graficas = document.getElementById("graficas");
+      const formas = document.getElementById("formas");
+      mezclar(graficas);
+      mezclar(formas);
+      document.getElementById("score").textContent = "0";
+    });
 
-const graficas = [
-  { id: 1, img: "dibujo1x.png" },
-  { id: 2, img: "dbujouncerounhoyo2polos.png" },
-  { id: 3, img: "dibujo3entrexcuadmas1.png" },
-  { id: 4, img: "dibujoparabolaentreparabola.png" },
-  { id: 5, img: "dibujounhoyouncerounpolo.png" },
-  { id: 6, img: "dibujoxcuadentrexmas1.png" },
-  { id: 7, img: "dibujoxentreparabola.png" },
-  { id: 8, img: "dibujoxentrex2.png" }
-];
+    // ==== DRAG & DROP ====
+    let draggedCard = null;
+    let score = 0;
 
-const formas = [
-  { id: 1, text: "\\( \\frac{-1}{x} \\)" },
-  { id: 2, text: "\\( \\frac{x(x-2)}{(x+1)x(x-3)} \\)" },
-  { id: 2, text: "\\( \\frac{x^2-2x}{x^3-2x^2-3x} \\)" },
-  { id: 3, text: "\\( \\frac{3}{x^2+1} \\)" },
-  { id: 4, text: "\\( \\frac{x^2-1}{x^2-4} \\)" },
-  { id: 4, text: "\\( \\frac{(x-1)(x+1)}{(x-2)(x+2)} \\)" },
-  { id: 5, text: "\\( \\frac{(x+1)(x-2)}{2(x+3)(x+1)} \\)" },
-  { id: 5, text: "\\( \\frac{x^2-x-2}{2x^2+4x+6x} \\)" },
-  { id: 6, text: "\\( \\frac{x^2}{2(x+1)} \\)" },
-  { id: 6, text: "\\( \\frac{x^2}{2x+2} \\)" },
-  { id: 7, text: "\\( \\frac{x-2}{(x+1)(x-3)} \\)" },
-  { id: 7, text: "\\( \\frac{x-2}{x^2-2x-3} \\)" },
-  { id: 8, text: "\\( \\frac{x}{(x-2)^2} \\)" },
-  { id: 8, text: "\\( \\frac{x}{x^2-4x+4} \\)" }
-];
+    document.querySelectorAll(".card").forEach(card => {
+      card.addEventListener("dragstart", e => {
+        draggedCard = e.target;
+        e.target.classList.add("dragging");
+      });
+      card.addEventListener("dragend", e => {
+        e.target.classList.remove("dragging");
+      });
+    });
 
-function shuffle(array) {
-  return array.sort(() => Math.random() - 0.5);
-}
+    document.querySelectorAll(".dropzone").forEach(zone => {
+      zone.addEventListener("dragover", e => e.preventDefault());
+      zone.addEventListener("drop", e => {
+        e.preventDefault();
+        if (draggedCard && draggedCard.dataset.func === zone.dataset.func) {
+          zone.appendChild(draggedCard);
+          score++;
+          document.getElementById("score").textContent = score;
+        } else {
+          alert("❌ No corresponde esa ecuación con esta gráfica");
+        }
+      });
+    });
 
-function iniciarJuego() {
-  score = 0;
-  document.getElementById("scoreboard").textContent = "Aciertos: 0";
-  const g = shuffle([...graficas]);
-  const f = shuffle([...formas]);
-  const graficasDiv = document.getElementById("graficas");
-  const formasDiv = document.getElementById("formas");
-
-  graficasDiv.innerHTML = "<h2>Gráficas</h2>";
-  formasDiv.innerHTML = "<h2>Formas algebraicas</h2>";
-
-  g.forEach(item => {
-    graficasDiv.innerHTML += `<div class="dropzone" data-func="${item.id}" ondrop="drop(event)" ondragover="allowDrop(event)">
-      <img src="${item.img}">
-    </div>`;
-  });
-
-  f.forEach(item => {
-    formasDiv.innerHTML += `<div class="card" draggable="true" data-func="${item.id}" ondragstart="drag(event)">
-      ${item.text}
-    </div>`;
-  });
-
-  if (window.MathJax) MathJax.typeset();
-}
-
-function allowDrop(ev) {
-  ev.preventDefault();
-}
-
-function drag(ev) {
-  ev.dataTransfer.setData("text", ev.target.dataset.func);
-  ev.dataTransfer.setData("elementId", ev.target.id);
-}
-
-function drop(ev) {
-  ev.preventDefault();
-  const func = ev.dataTransfer.getData("text");
-  const targetFunc = ev.target.closest(".dropzone").dataset.func;
-
-  if (func === targetFunc) {
-    ev.target.closest(".dropzone").classList.add("correct");
-    score++;
-  } else {
-    ev.target.closest(".dropzone").classList.add("incorrect");
-  }
-
-  document.getElementById("scoreboard").textContent = "Aciertos: " + score;
-}
-
-function actualizarLinkForm() {
-  const nombre = document.getElementById("nombreAlumno").value.trim();
-  const mensaje = document.getElementById("mensajeEnvio");
-  const link = document.getElementById("linkForm");
-
-  if (!nombre) {
-    mensaje.textContent = "⚠️ Escribe tu nombre antes de generar el enlace.";
-    link.style.display = "none";
-    return;
-  }
-
-  const enlaceBase = "https://genarofis.github.io/juegofuncionesracionales/enviar.html";
-  const url = `${enlaceBase}?nombre=${encodeURIComponent(nombre)}&aciertos=${score}`;
-  link.href = url;
-  link.style.display = "inline-block";
-  mensaje.textContent = "✅ Enlace generado. Da clic abajo para enviar tus resultados.";
-}
-</script>
-<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    // ==== ENVÍO DE RESULTADOS A MICROSOFT FORMS ====
+    document.getElementById("sendButton").addEventListener("click", () => {
+      const formURL = "https://forms.office.com/Pages/ResponsePage.aspx?id=YOR_CDhp3kqybwMxqIKcMFyHP94fCcxAqPuXtA-auINUM0tOR0dSSVg2SFZPWTA2VEpRV0RNQTAxSyQlQCNjPTEu";
+      const aciertos = document.getElementById("score").textContent;
+      const nombre = prompt("Por favor escribe tu nombre completo:");
+      if (nombre) {
+        const url = `${formURL}&nombre=${encodeURIComponent(nombre)}&aciertos=${aciertos}`;
+        window.open(url, "_blank");
+        alert(`✅ Tus resultados (${aciertos} aciertos) fueron enviados.`);
+      }
+    });
+  </script>
 </body>
 </html>
