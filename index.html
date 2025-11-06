@@ -1,53 +1,83 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Empareja la función con su gráfica</title>
-<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-<script id="MathJax-script" async
- src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<style>
-  body {
-    font-family: "Poppins", sans-serif;
-    background-color: #f5f7fa;
-    text-align: center;
-    margin: 20px;
-  }
-  h1 {
-    color: #333;
-  }
-  .container {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 30px;
-  }
-  .column {
-    width: 30%;
-  }
-  .card {
-    background: white;
-    border: 2px solid #ccc;
-    border-radius: 12px;
-    padding: 10px;
-    margin: 10px;
-    cursor: grab;
-    box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
-  }
-  .dropzone {
-    border: 2px dashed #aaa;
-    border-radius: 12px;
-    min-height: 80px;
-    margin: 10px;
-    padding: 10px;
-  }
-  .correct {
-    background-color: #c8f7c5;
-  }
-  .wrong {
-    background-color: #f7c5c5;
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Juego: Empareja funciones y gráficas</title>
+
+  <!-- 🎨 Estilos -->
+  <style>
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background-color: #f8fafc;
+      color: #1e293b;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    h1 {
+      background-color: #1e40af;
+      color: white;
+      margin: 0;
+      padding: 1rem;
+    }
+
+    h2 {
+      color: #1e40af;
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      padding: 1rem;
+    }
+
+    .column {
+      flex: 1 1 320px;
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 1rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .card, .dropzone {
+      background: #f1f5f9;
+      border-radius: 8px;
+      margin: 0.5rem auto;
+      padding: 0.5rem;
+      cursor: grab;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 10px rgba(30,64,175,0.2);
+    }
+
+    .dropzone img {
+      width: 100%;
+      height: auto;
+      border-radius: 6px;
+      display: block;
+    }
+
+    /* Estado cuando se arrastra encima */
+    .dropzone.over {
+      border: 2px dashed #1e40af;
+    }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 1.3rem; }
+      .column { flex: 1 1 90%; }
+      .card, .dropzone { font-size: 0.9rem; }
+    }
+  </style>
 </head>
+
+ 
 <body>
 
 <h1>🎯 Empareja cada gráfica con su forma algebraica</h1>
@@ -107,39 +137,45 @@
 </script>
 
 
+  <!-- 🧠 Lógica del juego -->
+  <script>
+    const cards = document.querySelectorAll(".card");
+    const dropzones = document.querySelectorAll(".dropzone");
 
- 
-<script>
-const cards = document.querySelectorAll(".card");
-const dropzones = document.querySelectorAll(".dropzone");
+    cards.forEach(card => {
+      card.addEventListener("dragstart", e => {
+        e.dataTransfer.setData("text", e.target.dataset.func);
+        e.target.classList.add("dragging");
+      });
+      card.addEventListener("dragend", e => e.target.classList.remove("dragging"));
+    });
 
-cards.forEach(card => {
-  card.addEventListener("dragstart", e => {
-    e.dataTransfer.setData("func", card.dataset.func);
-    e.dataTransfer.setData("id", card.innerHTML);
-  });
-});
+    dropzones.forEach(zone => {
+      zone.addEventListener("dragover", e => e.preventDefault());
+      zone.addEventListener("dragenter", e => zone.classList.add("over"));
+      zone.addEventListener("dragleave", e => zone.classList.remove("over"));
+      zone.addEventListener("drop", e => {
+        e.preventDefault();
+        const func = e.dataTransfer.getData("text");
+        zone.classList.remove("over");
+        if (func === zone.dataset.func) {
+          zone.style.border = "3px solid #16a34a";
+          alert("✅ ¡Correcto!");
+        } else {
+          zone.style.border = "3px solid #dc2626";
+          alert("❌ No corresponde. Intenta otra vez.");
+        }
+      });
+    });
+  </script>
 
-dropzones.forEach(zone => {
-  zone.addEventListener("dragover", e => e.preventDefault());
-  zone.addEventListener("drop", e => {
-    e.preventDefault();
-    const func = e.dataTransfer.getData("func");
-    if (zone.dataset.func === func) {
-      zone.classList.add("correct");
-      zone.classList.remove("wrong");
-      zone.innerHTML += "<br>" + e.dataTransfer.getData("id");
-      MathJax.typeset();
-    } else {
-      zone.classList.add("wrong");
-      setTimeout(() => zone.classList.remove("wrong"), 1000);
-    }
-  });
-});
-</script>
-
+  <!-- ✏️ Cargar MathJax para ecuaciones -->
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
 </body>
 </html>
+
 
 
 
