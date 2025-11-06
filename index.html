@@ -9,7 +9,6 @@
     src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
   <style>
-    /* ==== ESTILOS GENERALES ==== */
     body {
       font-family: "Segoe UI", sans-serif;
       background: linear-gradient(135deg, #f0f4ff, #dbe9ff);
@@ -30,13 +29,12 @@
       color: #004aad;
       position: sticky;
       top: 0;
-      background: white;
+      background: #f8faff;
       padding: 10px 0;
       border-bottom: 2px solid #e0e0e0;
       z-index: 10;
     }
 
-    /* ==== CONTENEDORES ==== */
     .container {
       display: flex;
       justify-content: center;
@@ -57,23 +55,12 @@
       transition: all 0.3s ease;
     }
 
-    /* Scroll personalizado */
-    .column::-webkit-scrollbar {
-      width: 8px;
-    }
-    .column::-webkit-scrollbar-track {
-      background: #f0f4ff;
-      border-radius: 10px;
-    }
+    .column::-webkit-scrollbar { width: 8px; }
     .column::-webkit-scrollbar-thumb {
       background: #0078d7;
       border-radius: 10px;
     }
-    .column::-webkit-scrollbar-thumb:hover {
-      background: #005fa3;
-    }
 
-    /* ==== ELEMENTOS DEL JUEGO ==== */
     .dropzone {
       border: 2px dashed #0078d7;
       border-radius: 10px;
@@ -83,6 +70,7 @@
       transition: background 0.3s;
     }
     .dropzone:hover { background: #e6f0ff; }
+
     img {
       width: 100%;
       max-width: 240px;
@@ -90,6 +78,7 @@
       display: block;
       margin: auto;
     }
+
     .card {
       background: #f8f9ff;
       margin: 10px;
@@ -103,7 +92,6 @@
     .card:hover { transform: scale(1.03); }
     .card.dragging { opacity: 0.5; }
 
-    /* ==== BOTONES Y MARCADOR ==== */
     .scoreboard {
       margin: 15px;
       font-size: 18px;
@@ -125,7 +113,6 @@
     }
     button:hover { background: #005fa3; }
 
-    /* ==== MODO CELULAR ==== */
     @media (max-width: 768px) {
       .container { flex-direction: column; align-items: center; }
       .column {
@@ -142,7 +129,8 @@
   <h1>🎯 Empareja la gráfica con su ecuación</h1>
   <div class="scoreboard">Aciertos: <span id="score">0</span></div>
   <div>
-    <button id="startButton">🔄 Comenzar Juego</button>
+    <button id="startButton">🔄 Comenzar juego</button>
+    <button id="checkButton">✅ Revisar respuestas</button>
     <button id="sendButton">📤 Enviar resultados</button>
   </div>
 
@@ -183,7 +171,7 @@
   </div>
 
   <script>
-    // ==== FUNCIÓN PARA MEZCLAR ELEMENTOS ====
+    // === Función para mezclar ===
     function mezclarElementos(selector) {
       const contenedor = document.querySelector(selector);
       const hijos = Array.from(contenedor.children);
@@ -194,16 +182,14 @@
       }
     }
 
-    // ==== BOTÓN PARA REINICIAR Y MEZCLAR ====
     document.getElementById("startButton").addEventListener("click", () => {
       mezclarElementos("#zonaGraficas");
       mezclarElementos("#zonaFormas");
       document.getElementById("score").textContent = "0";
     });
 
-    // ==== DRAG & DROP ====
+    // === Drag & Drop ===
     let draggedCard = null;
-    let score = 0;
 
     document.querySelectorAll(".card").forEach(card => {
       card.addEventListener("dragstart", e => {
@@ -219,17 +205,29 @@
       zone.addEventListener("dragover", e => e.preventDefault());
       zone.addEventListener("drop", e => {
         e.preventDefault();
-        if (draggedCard && draggedCard.dataset.func === zone.dataset.func) {
+        if (draggedCard) {
           zone.appendChild(draggedCard);
-          score++;
-          document.getElementById("score").textContent = score;
-        } else {
-          alert("❌ No corresponde esa ecuación con esta gráfica");
         }
       });
     });
 
-    // ==== ENVÍO DE RESULTADOS A MICROSOFT FORMS ====
+    // === Revisar respuestas ===
+    document.getElementById("checkButton").addEventListener("click", () => {
+      let aciertos = 0;
+      document.querySelectorAll(".dropzone").forEach(zone => {
+        const card = zone.querySelector(".card");
+        if (card && card.dataset.func === zone.dataset.func) {
+          aciertos++;
+          zone.style.borderColor = "#00c853";
+        } else if (card) {
+          zone.style.borderColor = "#d32f2f";
+        }
+      });
+      document.getElementById("score").textContent = aciertos;
+      alert(`Tienes ${aciertos} aciertos.`);
+    });
+
+    // === Enviar resultados ===
     document.getElementById("sendButton").addEventListener("click", () => {
       const formURL = "https://forms.office.com/Pages/ResponsePage.aspx?id=YOR_CDhp3kqybwMxqIKcMFyHP94fCcxAqPuXtA-auINUM0tOR0dSSVg2SFZPWTA2VEpRV0RNQTAxSyQlQCNjPTEu";
       const aciertos = document.getElementById("score").textContent;
@@ -243,4 +241,5 @@
   </script>
 </body>
 </html>
+
 
