@@ -73,6 +73,31 @@
 </div>
 
 <script>
+  // --- Mezclar aleatoriamente las tarjetas ---
+  const contenedor = document.getElementById("formas");
+  const tarjetas = Array.from(contenedor.querySelectorAll(".card"));
+  
+  // Función para mezclar un array (algoritmo de Fisher–Yates)
+  function mezclar(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+  }
+
+  mezclar(tarjetas);
+
+  // Borrar las tarjetas del DOM y volver a insertarlas en orden aleatorio
+  tarjetas.forEach(card => contenedor.appendChild(card));
+</script>
+
+const graficas = document.getElementById("graficas");
+const zonas = Array.from(graficas.querySelectorAll(".dropzone"));
+mezclar(zonas);
+zonas.forEach(z => graficas.appendChild(z));
+
+ 
+<script>
 const cards = document.querySelectorAll(".card");
 const dropzones = document.querySelectorAll(".dropzone");
 
@@ -103,4 +128,5 @@ dropzones.forEach(zone => {
 
 </body>
 </html>
+
 
