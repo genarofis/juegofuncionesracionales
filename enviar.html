@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Enviar resultados</title>
+<style>
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #f9f9f9;
+    color: #333;
+    text-align: center;
+    margin: 0;
+    padding: 1rem;
+  }
+
+  h2 {
+    color: #0078D4;
+  }
+
+  iframe {
+    width: 100%;
+    height: 90vh;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+</style>
+</head>
+<body>
+  <h2>📄 Formulario de resultados</h2>
+  <p>Verifica que tu nombre y número de aciertos aparezcan correctamente antes de enviar.</p>
+  <iframe id="formFrame"
+    src="https://forms.office.com/Pages/ResponsePage.aspx?id=YOR_CDhp3kqybwMxqIKcMFyHP94fCcxAqPuXtA-auINUM0tOR0dSSVg2SFZPWTA2VEpRV0RNQTAxSyQlQCNjPTEu">
+  </iframe>
+
+  <script>
+    const url = new URL(window.location.href);
+    const nombre = url.searchParams.get("nombre");
+    const aciertos = url.searchParams.get("aciertos");
+
+    const form = document.getElementById("formFrame");
+    form.addEventListener("load", () => {
+      try {
+        const doc = form.contentDocument || form.contentWindow.document;
+        const inputs = doc.querySelectorAll("input[type='text']");
+        if (inputs.length >= 2) {
+          inputs[0].value = nombre || "";
+          inputs[1].value = aciertos || "";
+        }
+      } catch (err) {
+        console.log("No se pudo acceder al contenido del formulario (seguridad del dominio).");
+      }
+    });
+  </script>
+</body>
+</html>
