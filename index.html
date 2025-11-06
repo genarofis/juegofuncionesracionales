@@ -238,8 +238,15 @@
         alert(`✅ Tus resultados (${aciertos} aciertos) fueron enviados.`);
       }
     });
+
+    // === Mezclar al cargar la página ===
+window.addEventListener("load", () => {
+  mezclarElementos("#zonaGraficas");
+  mezclarElementos("#zonaFormas");
+});
   </script>
 </body>
 </html>
+
 
 
