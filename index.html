@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Empareja la función con su gráfica</title>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async
+ src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+  body {
+    font-family: "Poppins", sans-serif;
+    background-color: #f5f7fa;
+    text-align: center;
+    margin: 20px;
+  }
+  h1 {
+    color: #333;
+  }
+  .container {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 30px;
+  }
+  .column {
+    width: 30%;
+  }
+  .card {
+    background: white;
+    border: 2px solid #ccc;
+    border-radius: 12px;
+    padding: 10px;
+    margin: 10px;
+    cursor: grab;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+  }
+  .dropzone {
+    border: 2px dashed #aaa;
+    border-radius: 12px;
+    min-height: 80px;
+    margin: 10px;
+    padding: 10px;
+  }
+  .correct {
+    background-color: #c8f7c5;
+  }
+  .wrong {
+    background-color: #f7c5c5;
+  }
+</style>
+</head>
+<body>
+
+<h1>🎯 Empareja cada gráfica con su forma algebraica</h1>
+<p>Arrastra la forma factorizada o desarrollada sobre la gráfica correspondiente.</p>
+
+<div class="container">
+  <div class="column" id="graficas">
+    <h2>Gráficas</h2>
+    <div class="dropzone" data-func="1"><img src="https://quicklatex.com/cache3/33/ql_70c9e3b5a3d9e1e47b0dc74a8e33a133_l3.png" width="200"></div>
+    <div class="dropzone" data-func="2"><img src="https://quicklatex.com/cache3/35/ql_98946fd78c03c5703132a5d64a881d35_l3.png" width="200"></div>
+    <div class="dropzone" data-func="3"><img src="https://quicklatex.com/cache3/38/ql_5b389e9497e823fc2273f9a71f09ea38_l3.png" width="200"></div>
+  </div>
+
+  <div class="column" id="formas">
+    <h2>Formas algebraicas</h2>
+    <div class="card" draggable="true" data-func="1">\( (x-1)(x+2) \)</div>
+    <div class="card" draggable="true" data-func="1">\( x^2 + x - 2 \)</div>
+    <div class="card" draggable="true" data-func="2">\( (x+1)(x-2)(x-3) \)</div>
+    <div class="card" draggable="true" data-func="2">\( x^3 - 4x^2 + x + 6 \)</div>
+    <div class="card" draggable="true" data-func="3">\( (x-2)^2 + 1 \)</div>
+    <div class="card" draggable="true" data-func="3">\( x^2 - 4x + 5 \)</div>
+  </div>
+</div>
+
+<script>
+const cards = document.querySelectorAll(".card");
+const dropzones = document.querySelectorAll(".dropzone");
+
+cards.forEach(card => {
+  card.addEventListener("dragstart", e => {
+    e.dataTransfer.setData("func", card.dataset.func);
+    e.dataTransfer.setData("id", card.innerHTML);
+  });
+});
+
+dropzones.forEach(zone => {
+  zone.addEventListener("dragover", e => e.preventDefault());
+  zone.addEventListener("drop", e => {
+    e.preventDefault();
+    const func = e.dataTransfer.getData("func");
+    if (zone.dataset.func === func) {
+      zone.classList.add("correct");
+      zone.classList.remove("wrong");
+      zone.innerHTML += "<br>" + e.dataTransfer.getData("id");
+      MathJax.typeset();
+    } else {
+      zone.classList.add("wrong");
+      setTimeout(() => zone.classList.remove("wrong"), 1000);
+    }
+  });
+});
+</script>
+
+</body>
+</html>
