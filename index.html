@@ -181,13 +181,30 @@
         hijos.splice(j, 1);
       }
     }
+//==== Comenzar juego ===
+document.getElementById("startButton").addEventListener("click", () => {
+  const zonaFormas = document.getElementById("zonaFormas");
 
-    document.getElementById("startButton").addEventListener("click", () => {
-      mezclarElementos("#zonaGraficas");
-      mezclarElementos("#zonaFormas");
-      document.getElementById("score").textContent = "0";
-    });
+  // 1️⃣ Mover todas las tarjetas de vuelta a la columna original
+  document.querySelectorAll(".card").forEach(card => {
+    zonaFormas.appendChild(card);
+    card.style.border = "2px solid transparent"; // limpiar colores
+  });
 
+  // 2️⃣ Mezclar ambas columnas
+  mezclarElementos("#zonaGraficas");
+  mezclarElementos("#zonaFormas");
+
+  // 3️⃣ Reiniciar marcador
+  document.getElementById("score").textContent = "0";
+});
+
+
+
+
+
+
+    
     // === Drag & Drop ===
     let draggedCard = null;
 
@@ -262,6 +279,7 @@ window.addEventListener("load", () => {
   </script>
 </body>
 </html>
+
 
 
 
