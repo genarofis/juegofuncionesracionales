@@ -4,8 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Juego: Empareja funciones y gráficas</title>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
-  <!-- 🎨 Estilos -->
+  <!-- 🎨 Estilos CSS -->
   <style>
     body {
       font-family: "Segoe UI", Arial, sans-serif;
@@ -17,14 +20,12 @@
     }
 
     h1 {
-      background-color: #1e40af;
+      background: linear-gradient(90deg, #3b82f6, #06b6d4);
       color: white;
       margin: 0;
       padding: 1rem;
-    }
-
-    h2 {
-      color: #1e40af;
+      font-size: 1.6rem;
+      border-bottom: 4px solid #0ea5e9;
     }
 
     .container {
@@ -36,18 +37,51 @@
     }
 
     .column {
-      flex: 1 1 320px;
+      flex: 1 1 340px;
       background: #ffffff;
       border-radius: 12px;
       padding: 1rem;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      max-height: 85vh;
+      overflow-y: auto;
     }
 
-    .card, .dropzone {
+    .column h2 {
+      color: #2563eb;
+      margin-bottom: 0.8rem;
+    }
+
+    .dropzone {
       background: #f1f5f9;
       border-radius: 8px;
       margin: 0.5rem auto;
       padding: 0.5rem;
+      min-height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .dropzone:hover {
+      background: #e0f2fe;
+      transform: scale(1.02);
+    }
+
+    .dropzone img {
+      width: 100%;
+      max-width: 250px;
+      height: auto;
+      border-radius: 6px;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: #f1f5f9;
+      border-radius: 8px;
+      margin: 0.5rem auto;
+      padding: 0.8rem;
       cursor: grab;
       transition: transform 0.2s, box-shadow 0.2s;
     }
@@ -57,137 +91,83 @@
       box-shadow: 0 0 10px rgba(30,64,175,0.2);
     }
 
-    .dropzone img {
-      width: 100%;
-      height: auto;
-      border-radius: 6px;
-      display: block;
-    }
-
-    /* Estado cuando se arrastra encima */
-    .dropzone.over {
-      border: 2px dashed #1e40af;
+    /* Indicador visual al arrastrar */
+    .dragging {
+      opacity: 0.5;
+      transform: scale(1.1);
     }
 
     @media (max-width: 600px) {
-      h1 { font-size: 1.3rem; }
-      .column { flex: 1 1 90%; }
-      .card, .dropzone { font-size: 0.9rem; }
+      h1 { font-size: 1.2rem; padding: 0.8rem; }
+      .column { flex: 1 1 90%; max-height: none; }
+      .dropzone img { max-width: 200px; }
+      .card { font-size: 0.9rem; }
     }
   </style>
 </head>
 
- 
 <body>
+  <h1>🎯 Juego: Empareja funciones y sus gráficas</h1>
 
-<h1>🎯 Empareja cada gráfica con su forma algebraica</h1>
-<p>Arrastra la forma factorizada o desarrollada sobre la gráfica correspondiente.</p>
+  <div class="container">
+    <!-- 📊 Columna de gráficas -->
+    <div class="column" id="graficas">
+      <h2>Gráficas</h2>
+      <div class="dropzone" data-func="1"><img src="dibujo1x.png"></div>
+      <div class="dropzone" data-func="2"><img src="dbujouncerounhoyo2polos.png"></div>
+      <div class="dropzone" data-func="3"><img src="dibujo3entrexcuadmas1.png"></div>
+      <div class="dropzone" data-func="4"><img src="dibujoparabolaentreparabola.png"></div>
+      <div class="dropzone" data-func="5"><img src="dibujounhoyouncerounpolo.png"></div>
+      <div class="dropzone" data-func="6"><img src="dibujoxcuadentrexmas1.png"></div>
+      <div class="dropzone" data-func="7"><img src="dibujoxentreparabola.png"></div>
+      <div class="dropzone" data-func="8"><img src="dibujoxentrex2.png"></div>
+    </div>
 
-<div class="container">
-  <div class="column" id="graficas">
-    <h2>Gráficas</h2>
-    <div class="dropzone" data-func="1"><img src="dibujo1x.png" width="200"></div>
-    <div class="dropzone" data-func="2"><img src="dbujouncerounhoyo2polos.png" width="200"></div>
-    <div class="dropzone" data-func="3"><img src="dibujo3entrexcuadmas1.png" width="200"></div>
-    <div class="dropzone" data-func="4"><img src="dibujoparabolaentreparabola.png" width="200"></div>
-    <div class="dropzone" data-func="5"><img src="dibujounhoyouncerounpolo.png" width="200"></div>
-    <div class="dropzone" data-func="6"><img src="dibujoxcuadentrexmas1.png" width="200"></div>
-    <div class="dropzone" data-func="7"><img src="dibujoxentreparabola.png" width="200"></div>
-    <div class="dropzone" data-func="8"><img src="dibujoxentrex2.png" width="200"></div>
+    <!-- 🧮 Columna de funciones -->
+    <div class="column" id="formas">
+      <h2>Formas algebraicas</h2>
+      <div class="card" draggable="true" data-func="1">\( \frac{-1}{x} \)</div>
+      <div class="card" draggable="true" data-func="2">\( \frac{x(x-2)}{(x+1)x(x-3)} \)</div>
+      <div class="card" draggable="true" data-func="2">\( \frac{x^2-2x}{x^3-2x^2-3x} \)</div>
+      <div class="card" draggable="true" data-func="3">\( \frac{3}{x^2+1}\)</div>
+      <div class="card" draggable="true" data-func="4">\( \frac{x^2-1}{x^2-4} \)</div>
+      <div class="card" draggable="true" data-func="4">\( \frac{(x-1)(x+1)}{(x-2)(x+2)} \)</div>
+      <div class="card" draggable="true" data-func="5">\( \frac{(x+1)(x-2)}{2(x+3)(x+1)} \)</div>
+      <div class="card" draggable="true" data-func="5">\( \frac{x^2-x-2}{2x^2+4x+6x} \)</div>
+      <div class="card" draggable="true" data-func="6">\( \frac{x^2}{2(x+1)} \)</div>
+      <div class="card" draggable="true" data-func="6">\( \frac{x^2}{2x+2} \)</div>
+      <div class="card" draggable="true" data-func="7">\( \frac{x-2}{(x+1)(x-3)} \)</div>
+      <div class="card" draggable="true" data-func="7">\( \frac{x-2}{x^2-2x-3} \)</div>
+      <div class="card" draggable="true" data-func="8">\( \frac{x}{(x-2)^2} \)</div>
+      <div class="card" draggable="true" data-func="8">\( \frac{x}{x^2-4x+4} \)</div>
+    </div>
   </div>
 
- 
-  <div class="column" id="formas">
-    <h2>Formas algebraicas</h2>
-    <div class="card" draggable="true" data-func="1">\( \frac{-1}{x} \)</div>
-    <div class="card" draggable="true" data-func="2">\( \frac{x(x-2)}{(x+1)x(x-3)} \)</div>
-    <div class="card" draggable="true" data-func="2">\( \frac{x^2-2x}{x^3-2x^2-3x} \)</div>
-    <div class="card" draggable="true" data-func="3">\( \frac{3}{x^2+1}\)</div>
-    <div class="card" draggable="true" data-func="4">\( \frac{x^2-1}{x^2-4} \)</div>
-    <div class="card" draggable="true" data-func="4">\( \frac{(x-1)(x+1)}{(x-2)(x+2)} \)</div>
-    <div class="card" draggable="true" data-func="5">\( \frac{(x+1)(x-2)}{2(x+3)(x+1)} \)</div>
-    <div class="card" draggable="true" data-func="5">\( \frac{x^2-x-2}{2x^2+4x+6x} \)</div>
-    <div class="card" draggable="true" data-func="6">\( \frac{x^2}{2(x+1)} \)</div>
-    <div class="card" draggable="true" data-func="6">\( \frac{x^2}{2x+2} \)</div>
-    <div class="card" draggable="true" data-func="7">\( \frac{x-2}{(x+1)(x-3)} \)</div>
-    <div class="card" draggable="true" data-func="7">\( \frac{x-2}{x^2-2x-3} \)</div>
-    <div class="card" draggable="true" data-func="8">\( \frac{x}{(x-2)^2} \)</div>
-    <div class="card" draggable="true" data-func="8">\( \frac{x}{x^2-4x+4} \)</div>
-  </div>
-</div>
-
-<script>
-  // --- Mezclar aleatoriamente las tarjetas ---
-  const contenedor = document.getElementById("formas");
-  const tarjetas = Array.from(contenedor.querySelectorAll(".card"));
-  
-  // Función para mezclar un array (algoritmo de Fisher–Yates)
-  function mezclar(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-  }
-
-  mezclar(tarjetas);
-
-  // Borrar las tarjetas del DOM y volver a insertarlas en orden aleatorio
-  tarjetas.forEach(card => contenedor.appendChild(card));
-</script>
-
-<script>
-  // --- Mezclar las gráficas ---
-  const contenedorGraficas = document.getElementById("graficas");
-  const zonas = Array.from(contenedorGraficas.querySelectorAll(".dropzone"));
-  
-  mezclar(zonas);
-  zonas.forEach(z => contenedorGraficas.appendChild(z));
-</script>
-
-
-  <!-- 🧠 Lógica del juego -->
+  <!-- 🧩 Script de arrastrar y soltar -->
   <script>
-    const cards = document.querySelectorAll(".card");
-    const dropzones = document.querySelectorAll(".dropzone");
+    const cards = document.querySelectorAll('.card');
+    const dropzones = document.querySelectorAll('.dropzone');
 
     cards.forEach(card => {
-      card.addEventListener("dragstart", e => {
-        e.dataTransfer.setData("text", e.target.dataset.func);
-        e.target.classList.add("dragging");
-      });
-      card.addEventListener("dragend", e => e.target.classList.remove("dragging"));
+      card.addEventListener('dragstart', () => card.classList.add('dragging'));
+      card.addEventListener('dragend', () => card.classList.remove('dragging'));
     });
 
     dropzones.forEach(zone => {
-      zone.addEventListener("dragover", e => e.preventDefault());
-      zone.addEventListener("dragenter", e => zone.classList.add("over"));
-      zone.addEventListener("dragleave", e => zone.classList.remove("over"));
-      zone.addEventListener("drop", e => {
-        e.preventDefault();
-        const func = e.dataTransfer.getData("text");
-        zone.classList.remove("over");
-        if (func === zone.dataset.func) {
-          zone.style.border = "3px solid #16a34a";
-          alert("✅ ¡Correcto!");
+      zone.addEventListener('dragover', e => e.preventDefault());
+      zone.addEventListener('drop', e => {
+        const card = document.querySelector('.dragging');
+        if (!card) return;
+        if (card.dataset.func === zone.dataset.func) {
+          zone.appendChild(card);
+          zone.style.background = '#bbf7d0';
+          zone.style.border = '2px solid #16a34a';
         } else {
-          zone.style.border = "3px solid #dc2626";
-          alert("❌ No corresponde. Intenta otra vez.");
+          zone.style.background = '#fecaca';
+          setTimeout(() => zone.style.background = '', 800);
         }
       });
     });
   </script>
-
-  <!-- ✏️ Cargar MathJax para ecuaciones -->
-  <script id="MathJax-script" async
-    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
-  </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
