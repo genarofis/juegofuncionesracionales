@@ -221,22 +221,24 @@ document.getElementById("checkButton").addEventListener("click", () => {
   });
 
   document.querySelectorAll(".dropzone").forEach(zone => {
-    const card = zone.querySelector(".card");
+    const cards = zone.querySelectorAll(".card");
+    let zonaCorrecta = false; // para saber si al menos una es correcta
 
-    if (card) {
+    cards.forEach(card => {
       if (card.dataset.func === zone.dataset.func) {
-        aciertos++;
-        card.style.border = "3px solid #00c853"; // Verde si es correcta
+        zonaCorrecta = true;
+        card.style.border = "3px solid #00c853"; // verde
       } else {
-        card.style.border = "3px solid #d32f2f"; // Rojo si es incorrecta
+        card.style.border = "3px solid #d32f2f"; // rojo
       }
-    }
+    });
+
+    if (zonaCorrecta) aciertos++; // si al menos una tarjeta es correcta, cuenta 1
   });
 
   document.getElementById("score").textContent = aciertos;
   alert(`Tienes ${aciertos} aciertos.`);
 });
-
 
     
 
@@ -260,6 +262,7 @@ window.addEventListener("load", () => {
   </script>
 </body>
 </html>
+
 
 
 
