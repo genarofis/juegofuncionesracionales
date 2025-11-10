@@ -228,6 +228,63 @@ document.getElementById("startButton").addEventListener("click", () => {
       });
     });
 
+
+// === Soporte táctil para móviles ===
+let touchCard = null;
+let touchOffsetX = 0;
+let touchOffsetY = 0;
+
+document.querySelectorAll(".card").forEach(card => {
+  card.addEventListener("touchstart", e => {
+    const touch = e.touches[0];
+    touchCard = card;
+    const rect = card.getBoundingClientRect();
+    touchOffsetX = touch.clientX - rect.left;
+    touchOffsetY = touch.clientY - rect.top;
+    card.style.position = "fixed";
+    card.style.zIndex = "9999";
+    card.style.pointerEvents = "none"; // evita conflictos
+  });
+
+  card.addEventListener("touchmove", e => {
+    if (!touchCard) return;
+    const touch = e.touches[0];
+    touchCard.style.left = `${touch.clientX - touchOffsetX}px`;
+    touchCard.style.top = `${touch.clientY - touchOffsetY}px`;
+  });
+
+  card.addEventListener("touchend", e => {
+    if (!touchCard) return;
+    touchCard.style.position = "";
+    touchCard.style.left = "";
+    touchCard.style.top = "";
+    touchCard.style.zIndex = "";
+    touchCard.style.pointerEvents = "";
+
+    // Verificar si se soltó sobre una dropzone
+    const touch = e.changedTouches[0];
+    const dropzones = document.querySelectorAll(".dropzone");
+    let dropped = false;
+    dropzones.forEach(zone => {
+      const rect = zone.getBoundingClientRect();
+      if (
+        touch.clientX >= rect.left &&
+        touch.clientX <= rect.right &&
+        touch.clientY >= rect.top &&
+        touch.clientY <= rect.bottom
+      ) {
+        zone.appendChild(touchCard);
+        dropped = true;
+      }
+    });
+    touchCard = null;
+  });
+});
+
+
+
+
+    
 // === Revisar respuestas ===
 document.getElementById("checkButton").addEventListener("click", () => {
   let aciertos = 0;
@@ -279,6 +336,7 @@ window.addEventListener("load", () => {
   </script>
 </body>
 </html>
+
 
 
 
